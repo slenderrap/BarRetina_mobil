@@ -1,6 +1,7 @@
 package com.example.barretina_mobil.Activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.example.barretina_mobil.Activities.CommandActivity;
 import com.example.barretina_mobil.Utils.Config;
 import com.example.barretina_mobil.Utils.UtilsConfig;
+import com.example.barretina_mobil.Utils.UtilsWS;
 import com.google.android.material.textfield.TextInputLayout;
 import com.example.barretina_mobil.R;
 
@@ -28,13 +30,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //UtilsConfig.deleteConfig(this);
+        //Delete config, only for test
+        UtilsConfig.deleteConfig(this);
         if (UtilsConfig.configExists(this)) {
             Config config = UtilsConfig.getConfig(this);
+            Log.d("MainActivity", "Server URL: " + config.getServerUrl().toString());
+            UtilsWS.init(config.getServerUrl().toString());
             //go to CommandActivity
             Intent intent = new Intent(this, CommandActivity.class);
             startActivity(intent);
-            finish();
             return;
         }
         name = findViewById(R.id.name);
@@ -60,8 +64,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         UtilsConfig.saveConfig(this, serverUrl, name);
+        Config config = UtilsConfig.getConfig(this);
+        UtilsWS.init(config.getServerUrl().toString());
         Intent intent = new Intent(this, CommandActivity.class);
         startActivity(intent);
-        finish();
     }
 }
