@@ -21,7 +21,13 @@ public class CommandActivity extends AppCompatActivity {
         tagsButton = findViewById(R.id.Tags);
         tagsButton.setOnClickListener(v -> {
             Intent intent = new Intent(CommandActivity.this, TagsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        return;
     }
 }

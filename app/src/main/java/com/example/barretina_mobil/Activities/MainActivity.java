@@ -5,15 +5,12 @@ import android.util.Log;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.Toast;
-import com.example.barretina_mobil.Activities.CommandActivity;
+
 import com.example.barretina_mobil.Utils.Config;
 import com.example.barretina_mobil.Utils.UtilsConfig;
 import com.example.barretina_mobil.Utils.UtilsWS;
@@ -41,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return;
         }
-        name = findViewById(R.id.name);
+        name = findViewById(R.id.productPriceTextView);
         urlServer = findViewById(R.id.urlServer);
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(v -> saveConfig());
