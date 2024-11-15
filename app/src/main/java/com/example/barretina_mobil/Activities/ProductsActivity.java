@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.barretina_mobil.R;
 import com.example.barretina_mobil.Utils.UtilsWS;
-import com.example.barretina_mobil.Activities.Adapters.ProductAddapter;
-import com.example.barretina_mobil.Models.Product;
+import com.example.barretina_mobil.Adapters.ProductInfoAddapter;
+import com.example.barretina_mobil.Models.ProductInfo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +25,8 @@ public class ProductsActivity extends AppCompatActivity {
     private ListView productsList;
     private String tag;
     private Button backButton;
-    private List<Product> products;
-    private ProductAddapter adapter;
+    private List<ProductInfo> products;
+    private ProductInfoAddapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class ProductsActivity extends AppCompatActivity {
         
         // Initialize products list and adapter
         products = new ArrayList<>();
-        adapter = new ProductAddapter(this, products);
+        adapter = new ProductInfoAddapter(this, products);
         productsList.setAdapter(adapter);
         
         setTitle("Products - " + tag);
@@ -48,9 +48,10 @@ public class ProductsActivity extends AppCompatActivity {
         
         requestProducts();
         
-        backButton = findViewById(R.id.backButton);
+        backButton = findViewById(R.id.commandList);
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(ProductsActivity.this, TagsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
     }
@@ -107,7 +108,7 @@ public class ProductsActivity extends AppCompatActivity {
                 
                 if (hasTag) {
                     Log.d("ProductsActivity", "Adding product: " + name + " - " + price);
-                    products.add(new Product(name, price));
+                    products.add(new ProductInfo(name, price));
                 }
             }
             

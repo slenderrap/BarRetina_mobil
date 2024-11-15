@@ -19,9 +19,9 @@ import com.example.barretina_mobil.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextInputLayout name;
-    TextInputLayout urlServer;
-    Button saveButton;
+    private TextInputLayout name;
+    private TextInputLayout urlServer;
+    private Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

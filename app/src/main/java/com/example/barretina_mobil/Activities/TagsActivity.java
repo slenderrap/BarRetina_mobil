@@ -5,14 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.barretina_mobil.R;
 import com.example.barretina_mobil.Utils.UtilsWS;
@@ -26,7 +21,7 @@ import android.widget.ArrayAdapter;
 
 public class TagsActivity extends AppCompatActivity {
 
-    UtilsWS ws;
+    private UtilsWS ws;
     private ArrayList<String> tags;
     private ListView taglist;
     private Button backButton;
@@ -49,7 +44,7 @@ public class TagsActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
         ws.safeSend(request.toString());
-        backButton = findViewById(R.id.backButton);
+        backButton = findViewById(R.id.commandList);
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(TagsActivity.this, CommandActivity.class);
             startActivity(intent);
