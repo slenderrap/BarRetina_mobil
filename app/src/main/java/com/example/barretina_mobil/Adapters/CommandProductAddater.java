@@ -19,6 +19,8 @@ import java.util.List;
 public class CommandProductAddater extends ArrayAdapter<CommandProduct> {
     private Context context;
     private List<CommandProduct> products;
+    private Runnable onProductAdded;
+    private Runnable onProductRemoved;
 
     public CommandProductAddater(Context context, List<CommandProduct> products) {
         super(context, 0, products);
@@ -51,18 +53,29 @@ public class CommandProductAddater extends ArrayAdapter<CommandProduct> {
             if (currentProduct.getQuantity() > 1) {
                 currentProduct.setQuantity(currentProduct.getQuantity() - 1);
                 notifyDataSetChanged();
+                onProductRemoved.run();
             }
             else{
                 products.remove(currentProduct);
                 notifyDataSetChanged();
+                onProductRemoved.run();
             }
         });
 
         increaseButton.setOnClickListener(v -> {
             currentProduct.setQuantity(currentProduct.getQuantity() + 1);
             notifyDataSetChanged();
+            onProductAdded.run();
         });
 
         return listItem;
+    }
+
+    public void setOnProductAdded(Runnable onProductAdded) {
+        this.onProductAdded = onProductAdded;
+    }
+
+    public void setOnProductRemoved(Runnable onProductRemoved) {
+        this.onProductRemoved = onProductRemoved;
     }
 }

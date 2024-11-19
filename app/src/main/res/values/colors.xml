@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="table_free">#4CAF50</color>
+    <color name="table_paid">#2196F3</color>
+    <color name="table_occupied">#FF5722</color>
 </resources>

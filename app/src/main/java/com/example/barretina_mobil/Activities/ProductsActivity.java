@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.barretina_mobil.R;
-import com.example.barretina_mobil.Utils.UtilsWS;
+import com.example.barretina_mobil.Utils.UtilsData;
 import com.example.barretina_mobil.Adapters.ProductInfoAddapter;
 import com.example.barretina_mobil.Models.ProductInfo;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProductsActivity extends AppCompatActivity {
-    private UtilsWS ws;
+    private UtilsData utilsData;
     private ListView productsList;
     private String tag;
     private Button backButton;
@@ -42,10 +42,7 @@ public class ProductsActivity extends AppCompatActivity {
         productsList.setAdapter(adapter);
         
         setTitle("Products - " + tag);
-        
-        ws = UtilsWS.getSharedInstance();
-        ws.setOnMessage(this::onMessage);
-        
+    
         requestProducts();
         
         backButton = findViewById(R.id.commandList);
@@ -57,67 +54,24 @@ public class ProductsActivity extends AppCompatActivity {
     }
 
     private void requestProducts() {
-        JSONObject request = new JSONObject();
-        try {
-            request.put("type", "getProducts");
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        ws.safeSend(request.toString());
-    }
-
-        private void onMessage(String message) {
-        try {
-            JSONObject json = new JSONObject(message);
-            String type = json.getString("type");
-            
-            if (type.equals("ack")) {
-                String responseType = json.getString("responseType");
-                if (responseType.equals("getProducts")) {
-                    runOnUiThread(() -> displayProducts(json));
-                }
-            } else if (type.equals("error")) {
-                Toast.makeText(this, "Error: " + json.getString("message"), Toast.LENGTH_SHORT).show();
+        utilsData = UtilsData.getInstance();
+        utilsData.getProductsByTag(tag, new UtilsData.DataCallback<List<ProductInfo>>() {
+            @Override
+            public void onSuccess(List<ProductInfo> result) {
+                runOnUiThread(() -> {
+                    products.clear();
+                    products.addAll(result);
+                    adapter.notifyDataSetChanged();
+                });
             }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    private void displayProducts(JSONObject json) {
-        Log.d("ProductsActivity", "displayProducts: " + json.toString());
-        try {
-            JSONArray productsArray = json.getJSONArray("products");
-            products.clear();
-
-            for (int i = 0; i < productsArray.length(); i++) {
-                JSONObject productJson = productsArray.getJSONObject(i);
-                
-                String name = productJson.getString("name");
-                double price = productJson.getDouble("price");
-                
-                // Filter products by tag
-                boolean hasTag = false;
-                JSONArray tagsArray = productJson.getJSONArray("tags");
-                for (int j = 0; j < tagsArray.length(); j++) {
-                    if (tagsArray.getString(j).equals(tag)) {
-                        hasTag = true;
-                        break;
-                    }
-                }
-                
-                if (hasTag) {
-                    Log.d("ProductsActivity", "Adding product: " + name + " - " + price);
-                    products.add(new ProductInfo(name, price));
-                }
+            @Override
+            public void onError(String error) {
+                runOnUiThread(() -> {
+                    Toast.makeText(ProductsActivity.this, "ProductsActivity Error: " + error, Toast.LENGTH_SHORT).show();
+                });
             }
-            
-            runOnUiThread(() -> adapter.notifyDataSetChanged());
-            
-        } catch (JSONException e) {
-            Log.e("ProductsActivity", "Error displaying products: " + e.getMessage());
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     @Override
