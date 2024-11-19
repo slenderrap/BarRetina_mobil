@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="FontSourceSansPro">
+        <item name="android:fontFamily">@font/source_sans_pro_regular</item>
+    </style>
+    <style name="FontSourceSerifPro">
+        <item name="android:fontFamily">@font/source_serif_pro_regular</item>
+    </style>
+    <style name="ButtonStyle">
+        <item name="android:textAppearance">@style/FontSourceSansPro</item>
+        <item name="android:backgroundTint">@color/green</item>
+    </style>
+
+
+</resources>

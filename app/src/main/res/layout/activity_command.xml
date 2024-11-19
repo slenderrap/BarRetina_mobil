@@ -18,28 +18,34 @@
 
         <Button
             android:id="@+id/config"
+            style="@style/FontSourceSansPro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
+            android:backgroundTint="@color/green"
             android:text="Config" />
 
         <Button
             android:id="@+id/tables"
+            style="@style/FontSourceSansPro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
+            android:backgroundTint="@color/green"
             android:text="Taules" />
 
         <Button
             android:id="@+id/Tags"
+            style="@style/FontSourceSansPro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/green"
             android:text="Tags" />
     </LinearLayout>
 
@@ -56,8 +62,11 @@
 
     <Button
         android:id="@+id/sendButton"
+        style="@style/FontSourceSansPro"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
+        android:backgroundTint="@color/green"
+        android:fontFamily="@font/source_sans_pro_regular"
         android:text="Enviar"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,6 +75,7 @@
 
     <TextView
         android:id="@+id/totalTextView"
+        style="@style/FontSourceSansPro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total: 1000€"
@@ -90,21 +100,25 @@
 
         <Button
             android:id="@+id/addButton"
+            style="@style/FontSourceSansPro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="0dp"
             android:layout_weight="1"
+            android:backgroundTint="@color/green"
             android:text="Afegir Producte" />
 
         <Button
             android:id="@+id/newButton"
+            style="@style/FontSourceSansPro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="0dp"
+            android:backgroundTint="@color/green"
             android:text="Nova" />
     </LinearLayout>
 
