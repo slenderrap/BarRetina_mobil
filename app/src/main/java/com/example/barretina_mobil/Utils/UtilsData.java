@@ -1,5 +1,7 @@
 package com.example.barretina_mobil.Utils;
 
+import android.util.Log;
+
 import com.example.barretina_mobil.Models.ProductInfo;
 import com.example.barretina_mobil.Models.CommandProduct;
 import com.example.barretina_mobil.Models.Table;
@@ -170,6 +172,7 @@ public class UtilsData {
         ws.setOnMessage(message -> {
             try {
                 JSONObject json = new JSONObject(message);
+                Log.d("UtilsData", "getTables: " + json.toString());
                 if (json.getString("type").equals("ack") && 
                     json.getString("responseType").equals("getTables")) {
                     
@@ -178,11 +181,27 @@ public class UtilsData {
 
                     for (int i = 0; i < tablesArray.length(); i++) {
                         JSONObject tableJson = tablesArray.getJSONObject(i);
+                        int tableNumber = tableJson.getInt("tablenumber");
+                        String waiter;
+                        try {
+                            waiter = tableJson.getString("waiter");
+                        } catch (JSONException e) {
+                            // waiter was null
+                            waiter = "";
+                        }
+                        boolean occupied = tableJson.getBoolean("occupied");
+                        boolean paid;
+                        try {
+                            paid = tableJson.getBoolean("paid");
+                        } catch (JSONException e) {
+                            // paid was null
+                            paid = false;
+                        }
                         tables.add(new Table(
-                            tableJson.getInt("tableNumber"),
-                            tableJson.getString("waiter"),
-                            tableJson.getBoolean("occupied"),
-                            tableJson.getBoolean("paid")
+                            tableNumber,
+                            waiter,
+                            occupied,
+                            paid
                         ));
                     }
 

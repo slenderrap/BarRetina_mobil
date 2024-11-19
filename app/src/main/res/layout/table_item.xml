@@ -7,6 +7,7 @@
 
     <TextView
         android:id="@+id/tableNumber"
+        style="@style/FontSourceSerifPro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -15,6 +16,7 @@
 
     <TextView
         android:id="@+id/waiterName"
+        style="@style/FontSourceSansPro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -22,6 +24,7 @@
 
     <TextView
         android:id="@+id/tableStatus"
+        style="@style/FontSourceSansPro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -30,8 +33,10 @@
 
     <Button
         android:id="@+id/editCommandButton"
+        style="@style/FontSourceSansPro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/green"
         android:text="Edit" />
 
 </LinearLayout> 

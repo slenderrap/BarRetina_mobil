@@ -7,10 +7,12 @@
 
     <Button
         android:id="@+id/backButton"
+        style="@style/FontSourceSansPro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/green"
+        android:text="Back" />
 
     <ListView
         android:id="@+id/tableList"

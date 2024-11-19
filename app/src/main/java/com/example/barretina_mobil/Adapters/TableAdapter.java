@@ -58,14 +58,14 @@ public class TableAdapter extends ArrayAdapter<Table> {
         
         if (table.isFree()) {
             status = "Free";
-            colorRes = R.color.table_free;
+            colorRes = R.color.green;
             holder.editCommandButton.setText("New");
         } else if (table.isPaid()) {
             status = "Paid";
-            colorRes = R.color.table_paid;
+            colorRes = R.color.blue;
         } else {
             status = "Occupied";
-            colorRes = R.color.table_occupied;
+            colorRes = R.color.red;
         }
         
         holder.statusTextView.setText(status);
