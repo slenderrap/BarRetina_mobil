@@ -49,7 +49,7 @@ public class TableAdapter extends ArrayAdapter<Table> {
 
         Table table = tables.get(position);
         
-        holder.numberTextView.setText(String.format("Table %d", table.getNumber()));
+        holder.numberTextView.setText(String.format("Taula %d", table.getNumber()));
         holder.waiterTextView.setText(table.getWaiterName());
         
         // Set status text and color based on table state
