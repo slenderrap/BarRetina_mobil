@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <TextView
+        style="@style/FontSourceSansPro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
@@ -30,6 +31,7 @@
         app:layout_constraintVertical_bias="0.43">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/FontSourceSansPro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="nom cambrer" />
@@ -46,6 +48,7 @@
         app:layout_constraintVertical_bias="0.57">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/FontSourceSansPro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="urlServidor" />
@@ -53,8 +56,10 @@
 
     <Button
         android:id="@+id/saveButton"
+        style="@style/FontSourceSansPro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/green"
         android:text="Guardar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

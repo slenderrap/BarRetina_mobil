@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/productNameTextView"
+        style="@style/FontSourceSerifPro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -18,17 +19,21 @@
 
     <Button
         android:id="@+id/decreaseButton"
-        android:layout_width="50dp"
+        style="@style/FontSourceSansPro"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/green"
         android:includeFontPadding="false"
         android:minWidth="0dp"
         android:minHeight="0dp"
-        android:text="-" />
+        android:text="-"
+        android:textSize="30px" />
 
     <TextView
         android:id="@+id/quantityTextView"
+        style="@style/FontSourceSansPro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
@@ -39,10 +44,12 @@
 
     <Button
         android:id="@+id/increaseButton"
-        android:layout_width="50dp"
+        style="@style/FontSourceSansPro"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/green"
         android:includeFontPadding="false"
         android:minWidth="0dp"
         android:minHeight="0dp"
@@ -51,6 +58,7 @@
 
     <TextView
         android:id="@+id/totalPriceTextView"
+        style="@style/FontSourceSansPro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
