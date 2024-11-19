@@ -20,11 +20,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/backButton"
+        android:id="@+id/commandList"
+        style="@style/FontSourceSansPro"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="11dp"
+        android:backgroundTint="@color/green"
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

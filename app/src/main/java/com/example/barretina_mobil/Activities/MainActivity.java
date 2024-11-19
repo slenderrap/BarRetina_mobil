@@ -19,16 +19,15 @@ import com.example.barretina_mobil.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextInputLayout name;
-    TextInputLayout urlServer;
-    Button saveButton;
+    private TextInputLayout name;
+    private TextInputLayout urlServer;
+    private Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         //Delete config, only for test
-        UtilsConfig.deleteConfig(this);
+        //UtilsConfig.deleteConfig(this);
         if (UtilsConfig.configExists(this)) {
             Config config = UtilsConfig.getConfig(this);
             Log.d("MainActivity", "Server URL: " + config.getServerUrl().toString());
@@ -38,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return;
         }
+        setContentView(R.layout.activity_main);
         name = findViewById(R.id.productPriceTextView);
         urlServer = findViewById(R.id.urlServer);
         saveButton = findViewById(R.id.saveButton);
