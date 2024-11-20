@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/green"
-        android:text="Back" />
+        android:text="Enrere" />
 
     <ListView
         android:id="@+id/tableList"
