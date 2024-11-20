@@ -59,6 +59,7 @@ public class TableActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     tables.clear();
                     tables.addAll(result);
+                    tableList.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 });
             }

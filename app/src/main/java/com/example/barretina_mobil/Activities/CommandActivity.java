@@ -33,6 +33,7 @@ public class CommandActivity extends AppCompatActivity {
     private UtilsWS ws;
     private Button tagsButton;
     private Button tableButton;
+    private Button configButton;
     private Button addButton;
     private Button sendButton;
     private Button tableSubButton;
@@ -59,6 +60,12 @@ public class CommandActivity extends AppCompatActivity {
         tableButton.setOnClickListener(v -> {
             Intent intent = new Intent(CommandActivity.this, TableActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
+        configButton = findViewById(R.id.config);
+        configButton.setOnClickListener(v -> {
+            Intent intent = new Intent(CommandActivity.this, MainActivity.class);
+            intent.putExtra("modify", true);
             startActivity(intent);
         });
         addButton = findViewById(R.id.addButton);

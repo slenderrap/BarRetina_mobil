@@ -162,12 +162,12 @@ public class UtilsData {
     }
     
     public void setTableUpdateCallback(long delay, DataCallback<List<Table>> callback) {
-
+        Log.d("UtilsData", "setTableUpdateCallback: " + delay);
+        
         ws.setOnMessage(message -> {
-            Log.d("UtilsData", "getTables: " + message);
+            Log.d("UtilsData", "getTables message: " + message);
             try {
                 JSONObject json = new JSONObject(message);
-                Log.d("UtilsData", "getTables: " + json.toString());
                 if (json.getString("type").equals("ack") && 
                     json.getString("responseType").equals("getTables")) {
                     
@@ -201,28 +201,35 @@ public class UtilsData {
                     }
                     callback.onSuccess(tables);
                 } else if (json.getString("type").equals("error")) {
+                    Log.e("UtilsData", "Error getting tables: " + json.getString("message"));
                     callback.onError(json.getString("message"));
                 }
             } catch (JSONException e) {
+                Log.e("UtilsData", "Error parsing tables JSON: " + e.getMessage());
                 callback.onError(e.getMessage());
             }
         });
 
         tableUpdateCallback = new Thread(() -> {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 Log.d("UtilsData", "tableUpdateCallback: running");
-                try {
-                    JSONObject request = new JSONObject();
-                    request.put("type", "getTables");
-                    ws.safeSend(request.toString());
-                }
-                catch (JSONException e) {
-                    callback.onError(e.getMessage());
+                if (ws.isConnected()) {
+                    try {
+                        JSONObject request = new JSONObject();
+                        request.put("type", "getTables");
+                        ws.safeSend(request.toString());
+                    }
+                    catch (JSONException e) {
+                        Log.e("UtilsData", "Error creating tables request: " + e.getMessage());
+                        callback.onError(e.getMessage());
+                    }
+                } else {
+                    Log.d("UtilsData", "WebSocket not connected, skipping tables request");
                 }
                 try {
                     Thread.sleep(delay);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
                     return;
                 }
             }
@@ -243,5 +250,6 @@ public class UtilsData {
         cachedTags = null;
         cachedProductsByTag.clear();
         cachedAllProducts = null;
+        stopTableUpdateCallback();
     }
 }

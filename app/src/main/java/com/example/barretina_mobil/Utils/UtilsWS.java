@@ -62,6 +62,7 @@ public class UtilsWS extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshake) {
         System.out.println("WS connected with: " + getURI() + ", to " + getRemoteSocketAddress());
+        isConnected.set(true);
     }
 
     @Override
@@ -95,21 +96,27 @@ public class UtilsWS extends WebSocketClient {
         if (exitRequested.get()) { return; }
     
         System.out.println("WS reconnecting to: " + UtilsWS.location);
+        isConnected.set(false);
 
         try {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
             System.out.println("WD Error, waiting");
-            Thread.currentThread().interrupt();  // Assegurar que el fil es torna a interrompre correctament
+            Thread.currentThread().interrupt();
         }
     
         if (exitRequested.get()) { return; }
         
         Consumer<String> oldCallBack = this.onMessageCallBack;
-        sharedInstance.close();
+        if (sharedInstance != null) {
+            sharedInstance.close();
+        }
         sharedInstance = null;
         getSharedInstance();
-        sharedInstance.setOnMessage(oldCallBack);
+        if (sharedInstance != null) {
+            sharedInstance.setOnMessage(oldCallBack);
+            isConnected.set(true);
+        }
     }
     
     public void forceExit () {
