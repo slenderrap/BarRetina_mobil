@@ -115,6 +115,7 @@ public class CommandActivity extends AppCompatActivity {
             if (products.size() == 0) {
                 sendButton.setEnabled(false);
                 sendButton.setBackgroundColor(getResources().getColor(R.color.red));
+                sendButton.setTextColor(getResources().getColor(R.color.blue));
             }
         });
         listView.setAdapter(adapter);
@@ -136,6 +137,7 @@ public class CommandActivity extends AppCompatActivity {
         if (products.size() == 0) {
             sendButton.setEnabled(false);
             sendButton.setBackgroundColor(getResources().getColor(R.color.red));
+            sendButton.setTextColor(getResources().getColor(R.color.blue));
         }
     }
 
