@@ -2,6 +2,7 @@ package com.example.barretina_mobil.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class TableActivity extends AppCompatActivity {
 
         // Set up click listeners
         backButton.setOnClickListener(v -> {
+            utilsData.stopTableUpdateCallback();
             Intent intent = new Intent(TableActivity.this, CommandActivity.class);
             startActivity(intent);
             finish();
@@ -50,9 +52,10 @@ public class TableActivity extends AppCompatActivity {
     }
 
     private void loadTables() {
-        utilsData.getTables(new UtilsData.DataCallback<List<Table>>() {
+        utilsData.setTableUpdateCallback(1000, new UtilsData.DataCallback<List<Table>>() {
             @Override
             public void onSuccess(List<Table> result) {
+                Log.d("TableActivity", "onSuccess: " + result.toString());
                 runOnUiThread(() -> {
                     tables.clear();
                     tables.addAll(result);

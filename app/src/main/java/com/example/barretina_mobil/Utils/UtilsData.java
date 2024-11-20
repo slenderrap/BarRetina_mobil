@@ -18,12 +18,11 @@ import java.util.List;
 public class UtilsData {
     private static UtilsData instance;
     private final UtilsWS ws;
-    
+    private Thread tableUpdateCallback;
     // Cache storage
     private ArrayList<String> cachedTags;
     private HashMap<String, List<ProductInfo>> cachedProductsByTag;
     private List<Product> cachedAllProducts;
-    private List<Table> cachedTables;
     
     // Callbacks
     public interface DataCallback<T> {
@@ -36,7 +35,6 @@ public class UtilsData {
         cachedTags = null;
         cachedProductsByTag = new HashMap<>();
         cachedAllProducts = null;
-        cachedTables = null;
     }
 
     public static UtilsData getInstance() {
@@ -163,13 +161,10 @@ public class UtilsData {
         }
     }
     
-    public void getTables(DataCallback<List<Table>> callback) {
-        if (cachedTables != null) {
-            callback.onSuccess(cachedTables);
-            return;
-        }
+    public void setTableUpdateCallback(long delay, DataCallback<List<Table>> callback) {
 
         ws.setOnMessage(message -> {
+            Log.d("UtilsData", "getTables: " + message);
             try {
                 JSONObject json = new JSONObject(message);
                 Log.d("UtilsData", "getTables: " + json.toString());
@@ -204,8 +199,6 @@ public class UtilsData {
                             paid
                         ));
                     }
-
-                    cachedTables = tables;
                     callback.onSuccess(tables);
                 } else if (json.getString("type").equals("error")) {
                     callback.onError(json.getString("message"));
@@ -215,12 +208,32 @@ public class UtilsData {
             }
         });
 
-        try {
-            JSONObject request = new JSONObject();
-            request.put("type", "getTables");
-            ws.safeSend(request.toString());
-        } catch (JSONException e) {
-            callback.onError(e.getMessage());
+        tableUpdateCallback = new Thread(() -> {
+            while (true) {
+                Log.d("UtilsData", "tableUpdateCallback: running");
+                try {
+                    JSONObject request = new JSONObject();
+                    request.put("type", "getTables");
+                    ws.safeSend(request.toString());
+                }
+                catch (JSONException e) {
+                    callback.onError(e.getMessage());
+                }
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
+        });
+        tableUpdateCallback.start();
+    }
+
+    public void stopTableUpdateCallback() {
+        if (tableUpdateCallback != null) {
+            tableUpdateCallback.interrupt();
+            tableUpdateCallback = null;
         }
     }
 
@@ -230,6 +243,5 @@ public class UtilsData {
         cachedTags = null;
         cachedProductsByTag.clear();
         cachedAllProducts = null;
-        cachedTables = null;
     }
 }
