@@ -13,23 +13,27 @@ import android.widget.Toast;
 
 import com.example.barretina_mobil.Utils.Config;
 import com.example.barretina_mobil.Utils.UtilsConfig;
+import com.example.barretina_mobil.Utils.UtilsData;
 import com.example.barretina_mobil.Utils.UtilsWS;
 import com.google.android.material.textfield.TextInputLayout;
 import com.example.barretina_mobil.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextInputLayout name;
-    TextInputLayout urlServer;
-    Button saveButton;
+    private TextInputLayout name;
+    private TextInputLayout urlServer;
+    private Button saveButton;
+
+    private boolean modify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         //Delete config, only for test
-        UtilsConfig.deleteConfig(this);
-        if (UtilsConfig.configExists(this)) {
+        //UtilsConfig.deleteConfig(this);
+        Intent prevIntent = getIntent();
+        modify = prevIntent.getBooleanExtra("modify", false);
+        if (!modify && UtilsConfig.configExists(this)) {
             Config config = UtilsConfig.getConfig(this);
             Log.d("MainActivity", "Server URL: " + config.getServerUrl().toString());
             UtilsWS.init(config.getServerUrl().toString());
@@ -38,10 +42,16 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return;
         }
+        setContentView(R.layout.activity_main);
         name = findViewById(R.id.productPriceTextView);
         urlServer = findViewById(R.id.urlServer);
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(v -> saveConfig());
+        if (modify) {
+            Config config = UtilsConfig.getConfig(this);
+            urlServer.getEditText().setText(config.getServerUrl().toString());
+            name.getEditText().setText(config.getPlace());
+        }
     }
 
     private void saveConfig() {
@@ -62,7 +72,13 @@ public class MainActivity extends AppCompatActivity {
 
         UtilsConfig.saveConfig(this, serverUrl, name);
         Config config = UtilsConfig.getConfig(this);
+        if (modify) {
+            UtilsWS.getSharedInstance().forceExit();
+        }
         UtilsWS.init(config.getServerUrl().toString());
+        if (modify) {
+            UtilsData.getInstance().clearCache();
+        }
         Intent intent = new Intent(this, CommandActivity.class);
         startActivity(intent);
     }

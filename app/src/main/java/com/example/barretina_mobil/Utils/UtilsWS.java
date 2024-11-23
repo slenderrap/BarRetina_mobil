@@ -1,5 +1,7 @@
 package com.example.barretina_mobil.Utils;
 
+import android.util.Log;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
@@ -49,11 +51,14 @@ public class UtilsWS extends WebSocketClient {
     }
 
     public void setOnMessage (Consumer<String> callBack) {
+        Log.d("setOnMessage", "callBack: " + (callBack != null));
         this.onMessageCallBack = callBack;
     }
 
     @Override
     public void onMessage(String message) {
+        Log.d("onMessage", "message: " + message);
+        Log.d("onMessage", "onMessageCallBack: " + (onMessageCallBack != null));
         if (onMessageCallBack != null) {
             onMessageCallBack.accept(message);
         }
@@ -62,6 +67,7 @@ public class UtilsWS extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshake) {
         System.out.println("WS connected with: " + getURI() + ", to " + getRemoteSocketAddress());
+        isConnected.set(true);
     }
 
     @Override
@@ -93,37 +99,37 @@ public class UtilsWS extends WebSocketClient {
 
     public void reconnect () {
         if (exitRequested.get()) { return; }
+        forceExit();
     
         System.out.println("WS reconnecting to: " + UtilsWS.location);
+        isConnected.set(false);
 
         try {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
             System.out.println("WD Error, waiting");
-            Thread.currentThread().interrupt();  // Assegurar que el fil es torna a interrompre correctament
+            Thread.currentThread().interrupt();
         }
     
         if (exitRequested.get()) { return; }
         
         Consumer<String> oldCallBack = this.onMessageCallBack;
-        sharedInstance.close();
+        if (sharedInstance != null) {
+            sharedInstance.close();
+        }
         sharedInstance = null;
         getSharedInstance();
-        sharedInstance.setOnMessage(oldCallBack);
+        if (sharedInstance != null) {
+            sharedInstance.setOnMessage(oldCallBack);
+            isConnected.set(true);
+        }
     }
     
     public void forceExit () {
         System.out.println("WS Closing ...");
         isConnected.set(false);
-        exitRequested.set(true);
-        try {
-            if (!isClosed()) {
-                super.closeBlocking();
-            }
-        } catch (Exception e) {
-            System.out.println("WS Interrupted while closing WebSocket connection");
-            Thread.currentThread().interrupt();
-        }
+        sharedInstance.close();
+        sharedInstance = null;
     }
 
     public boolean isConnected() {
