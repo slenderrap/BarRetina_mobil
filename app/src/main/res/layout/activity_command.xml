@@ -154,7 +154,7 @@
             android:text="Afegir Producte" />
 
         <Button
-            android:id="@+id/newButton"
+            android:id="@+id/newCommandButton"
             style="@style/FontSourceSansPro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

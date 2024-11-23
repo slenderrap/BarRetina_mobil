@@ -1,5 +1,7 @@
 package com.example.barretina_mobil.Utils;
 
+import android.util.Log;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
@@ -49,11 +51,14 @@ public class UtilsWS extends WebSocketClient {
     }
 
     public void setOnMessage (Consumer<String> callBack) {
+        Log.d("setOnMessage", "callBack: " + (callBack != null));
         this.onMessageCallBack = callBack;
     }
 
     @Override
     public void onMessage(String message) {
+        Log.d("onMessage", "message: " + message);
+        Log.d("onMessage", "onMessageCallBack: " + (onMessageCallBack != null));
         if (onMessageCallBack != null) {
             onMessageCallBack.accept(message);
         }
@@ -94,6 +99,7 @@ public class UtilsWS extends WebSocketClient {
 
     public void reconnect () {
         if (exitRequested.get()) { return; }
+        forceExit();
     
         System.out.println("WS reconnecting to: " + UtilsWS.location);
         isConnected.set(false);
@@ -122,15 +128,8 @@ public class UtilsWS extends WebSocketClient {
     public void forceExit () {
         System.out.println("WS Closing ...");
         isConnected.set(false);
-        exitRequested.set(true);
-        try {
-            if (!isClosed()) {
-                super.closeBlocking();
-            }
-        } catch (Exception e) {
-            System.out.println("WS Interrupted while closing WebSocket connection");
-            Thread.currentThread().interrupt();
-        }
+        sharedInstance.close();
+        sharedInstance = null;
     }
 
     public boolean isConnected() {

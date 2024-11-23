@@ -72,10 +72,12 @@ public class MainActivity extends AppCompatActivity {
 
         UtilsConfig.saveConfig(this, serverUrl, name);
         Config config = UtilsConfig.getConfig(this);
+        if (modify) {
+            UtilsWS.getSharedInstance().forceExit();
+        }
         UtilsWS.init(config.getServerUrl().toString());
         if (modify) {
             UtilsData.getInstance().clearCache();
-            UtilsWS.getSharedInstance().reconnect();
         }
         Intent intent = new Intent(this, CommandActivity.class);
         startActivity(intent);

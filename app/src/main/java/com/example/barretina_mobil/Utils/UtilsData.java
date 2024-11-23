@@ -17,7 +17,7 @@ import java.util.List;
 
 public class UtilsData {
     private static UtilsData instance;
-    private final UtilsWS ws;
+    private UtilsWS ws;
     private Thread tableUpdateCallback;
     // Cache storage
     private ArrayList<String> cachedTags;
@@ -46,11 +46,13 @@ public class UtilsData {
 
     public void getTags(DataCallback<ArrayList<String>> callback) {
         if (cachedTags != null) {
+            Log.d("GetTags", "cachedTags != null");
             callback.onSuccess(cachedTags);
             return;
         }
-
+        Log.d("GetTags", "setOnMessage");
         ws.setOnMessage(message -> {
+            Log.d("GetTags", "setOnMessage message: " + message);
             try {
                 JSONObject json = new JSONObject(message);
                 if (json.getString("type").equals("ack") && 
@@ -69,15 +71,17 @@ public class UtilsData {
                     callback.onError(json.getString("message"));
                 }
             } catch (JSONException e) {
+                Log.d("GetTags", "setOnMessage JSONException: " + e.getMessage());
                 callback.onError(e.getMessage());
             }
         });
-
+        Log.d("GetTags", "sendRequest");
         try {
             JSONObject request = new JSONObject();
             request.put("type", "getTags");
             ws.safeSend(request.toString());
         } catch (JSONException e) {
+            Log.d("GetTags", "sendRequest JSONException: " + e.getMessage());
             callback.onError(e.getMessage());
         }
     }
@@ -163,11 +167,11 @@ public class UtilsData {
     
     public void setTableUpdateCallback(long delay, DataCallback<List<Table>> callback) {
         Log.d("UtilsData", "setTableUpdateCallback: " + delay);
-        
         ws.setOnMessage(message -> {
-            Log.d("UtilsData", "getTables message: " + message);
+            Log.d("UtilsData", "getTables: " + message);
             try {
                 JSONObject json = new JSONObject(message);
+                Log.d("UtilsData", "getTables: " + json.toString());
                 if (json.getString("type").equals("ack") && 
                     json.getString("responseType").equals("getTables")) {
                     
@@ -201,35 +205,28 @@ public class UtilsData {
                     }
                     callback.onSuccess(tables);
                 } else if (json.getString("type").equals("error")) {
-                    Log.e("UtilsData", "Error getting tables: " + json.getString("message"));
                     callback.onError(json.getString("message"));
                 }
             } catch (JSONException e) {
-                Log.e("UtilsData", "Error parsing tables JSON: " + e.getMessage());
                 callback.onError(e.getMessage());
             }
         });
 
         tableUpdateCallback = new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
+            while (true) {
                 Log.d("UtilsData", "tableUpdateCallback: running");
-                if (ws.isConnected()) {
-                    try {
-                        JSONObject request = new JSONObject();
-                        request.put("type", "getTables");
-                        ws.safeSend(request.toString());
-                    }
-                    catch (JSONException e) {
-                        Log.e("UtilsData", "Error creating tables request: " + e.getMessage());
-                        callback.onError(e.getMessage());
-                    }
-                } else {
-                    Log.d("UtilsData", "WebSocket not connected, skipping tables request");
+                try {
+                    JSONObject request = new JSONObject();
+                    request.put("type", "getTables");
+                    ws.safeSend(request.toString());
+                }
+                catch (JSONException e) {
+                    callback.onError(e.getMessage());
                 }
                 try {
                     Thread.sleep(delay);
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+                    e.printStackTrace();
                     return;
                 }
             }
@@ -244,12 +241,11 @@ public class UtilsData {
         }
     }
 
-    
-
     public void clearCache() {
         cachedTags = null;
         cachedProductsByTag.clear();
         cachedAllProducts = null;
         stopTableUpdateCallback();
+        ws = UtilsWS.getSharedInstance();
     }
 }

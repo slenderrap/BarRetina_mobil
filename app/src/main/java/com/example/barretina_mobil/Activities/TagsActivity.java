@@ -54,14 +54,23 @@ public class TagsActivity extends AppCompatActivity {
     }
 
     private void GetTags() {
+        Log.d("GetTags", "GetTags");
         utilsData = UtilsData.getInstance();
         utilsData.getTags(new UtilsData.DataCallback<ArrayList<String>>() {
             @Override
             public void onSuccess(ArrayList<String> result) {
+                Log.d("GetTags", "GetTags Success");
                 runOnUiThread(() -> {
+                    Log.d("GetTags", "GetTags RunOnUiThread");
+                    Log.d("GetTags", "tags size: "+ tags.size() + " result size: " + result.size());
                     tags.clear();
+                    Log.d("GetTags", "tags size: "+ tags.size() + " result size: " + result.size());
                     tags.addAll(result);
                     adapter.notifyDataSetChanged();
+                    Log.d("GetTags", "adapter" + adapter.getItem(0));
+                    Log.d("GetTags", "taglist" + taglist.getAdapter());
+                    Log.d("GetTags", "taglist" + (taglist.getAdapter() == adapter));
+                    taglist.invalidateViews();
                 });
             }
 

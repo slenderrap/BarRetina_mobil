@@ -1,10 +1,12 @@
 package com.example.barretina_mobil.Activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import com.example.barretina_mobil.Models.ProductInfo;
 import java.util.ArrayList;
 import android.util.Log;
 
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +27,7 @@ import com.example.barretina_mobil.R;
 import com.example.barretina_mobil.Utils.UtilsWS;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CommandActivity extends AppCompatActivity {
@@ -35,6 +39,7 @@ public class CommandActivity extends AppCompatActivity {
     private Button tableButton;
     private Button configButton;
     private Button addButton;
+    private Button newCommandButton;
     private Button sendButton;
     private Button tableSubButton;
     private Button tableAddButton;
@@ -73,6 +78,10 @@ public class CommandActivity extends AppCompatActivity {
             Intent intent = new Intent(CommandActivity.this, TagsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+        });
+        newCommandButton = findViewById(R.id.newCommandButton);
+        newCommandButton.setOnClickListener(v -> {
+            newComandDialog();
         });
 
         tableNumText = findViewById(R.id.tableNum);
@@ -195,6 +204,71 @@ public class CommandActivity extends AppCompatActivity {
 
     }
 
+    private void newComandDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("En quina taula vols posar la comanda?");
+    
+        // Create an EditText and set it to numeric input
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER); // Restrict to numbers
+        builder.setView(input);
+    
+        builder.setPositiveButton("OK", null); // Placeholder, set later
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+    
+        AlertDialog dialog = builder.create();
+    
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                // Get the positive button and set a custom click listener
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String userInput = input.getText().toString();
+                        int tableNumber = 0;
+                        try {
+                            tableNumber = Integer.parseInt(userInput);
+                        } catch (Exception e) {
+                            Toast.makeText(CommandActivity.this, "Invalid table number", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        // Validate input
+                        if (tableNumber > MAX_TABLE_NUMBER || tableNumber <= 0) {
+                            Toast.makeText(CommandActivity.this, "Invalid table number", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            // Dismiss dialog and proceed
+                            CommandActivity.tableNumber = tableNumber;
+                            tableNumText.setText(String.valueOf(tableNumber));
+                            products.clear();
+                            adapter.notifyDataSetChanged();
+                            CalculateTotal();
+                            sendButton.setEnabled(false);
+                            sendButton.setBackgroundColor(getResources().getColor(R.color.red));
+                            try {
+                                JSONObject json = new JSONObject();
+                                json.put("type", "newCommand");
+                                json.put("tableNumber", tableNumber);
+                                ws.safeSend(json.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            dialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+    
+        dialog.show();
+    }
+    
     @Override
     public void onBackPressed() {
         super.onBackPressed();
