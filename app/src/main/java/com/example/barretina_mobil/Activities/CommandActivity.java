@@ -32,7 +32,7 @@ import org.json.JSONObject;
 
 public class CommandActivity extends AppCompatActivity {
 
-    private static final int MAX_TABLE_NUMBER = 20;
+    private static final int MAX_TABLE_NUMBER = 25;
 
     private UtilsWS ws;
     private Button tagsButton;

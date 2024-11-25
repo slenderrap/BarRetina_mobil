@@ -189,11 +189,13 @@ public class UtilsData {
                             waiter = "";
                         }
                         boolean occupied = tableJson.getBoolean("occupied");
-                        boolean paid;
+                        boolean paid = false;
                         try {
-                            paid = tableJson.getBoolean("paid");
+                            String state = tableJson.getString("state");
+                            if (state.equals("pagat"))
+                                paid = true;
                         } catch (JSONException e) {
-                            // paid was null
+                            // state was null
                             paid = false;
                         }
                         tables.add(new Table(
